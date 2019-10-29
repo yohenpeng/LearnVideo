@@ -24,6 +24,7 @@
 
 @property (strong, nonatomic) AVCaptureVideoDataOutput *videoOutput;
 
+
 @property (strong, nonatomic) dispatch_queue_t videoQueue;
 
 @property (strong, nonatomic) YHGpuProcessor *gpuProcessor;

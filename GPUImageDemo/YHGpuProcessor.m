@@ -371,12 +371,12 @@ static BOOL bNeedCreateComporessSession = YES;
             
             //设置码率
 //            int bitRate = 1200 * 1000;
-//            CFNumberRef bitRateRef = CFNumberCreate(NULL, kCFNumberSInt32Type, &bitRate);
+//            CFNumberRef bitRateRef = CFNumberCreate(NULL, kCFNumberIntType, &bitRate);
 //            VTSessionSetProperty(sessionRef, kVTCompressionPropertyKey_AverageBitRate, &bitRateRef);
             
-//            int bigRateLimit = 720 * 1280 * 3 * 4;
-//            CFNumberRef bitRateLimitRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberIntType, &bigRateLimit);
-//            VTSessionSetProperty(sessionRef, kVTCompressionPropertyKey_DataRateLimits, bitRateLimitRef);
+            int bigRateLimit = 720 * 1280 * 3 * 4;
+            CFNumberRef bitRateLimitRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberIntType, &bigRateLimit);
+            VTSessionSetProperty(sessionRef, kVTCompressionPropertyKey_DataRateLimits, bitRateLimitRef);
             
             //准备开始编码
             VTCompressionSessionPrepareToEncodeFrames(sessionRef);
