@@ -1,0 +1,428 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 51;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		660E09BF2317C221007DFF39 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 660E09BE2317C221007DFF39 /* AppDelegate.m */; };
+		660E09C22317C221007DFF39 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 660E09C12317C221007DFF39 /* ViewController.m */; };
+		660E09C52317C221007DFF39 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 660E09C32317C221007DFF39 /* Main.storyboard */; };
+		660E09C72317C223007DFF39 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 660E09C62317C223007DFF39 /* Assets.xcassets */; };
+		660E09CA2317C223007DFF39 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 660E09C82317C223007DFF39 /* LaunchScreen.storyboard */; };
+		660E09CD2317C223007DFF39 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 660E09CC2317C223007DFF39 /* main.m */; };
+		66354A8C233C8EEB00782D9A /* YHImageFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 66354A8B233C8EEB00782D9A /* YHImageFilter.m */; };
+		6638DA5D2367EFD7001765AF /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6638DA5C2367EFD7001765AF /* VideoToolbox.framework */; };
+		66D4F2C02333A9E800DF07AB /* YHGpuProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 66D4F2BF2333A9E800DF07AB /* YHGpuProcessor.m */; };
+		DAF504913FE6B1A686B36123 /* libPods-GPUImageDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A39ED06FCBE3A942574500FD /* libPods-GPUImageDemo.a */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		660E09BA2317C221007DFF39 /* GPUImageDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GPUImageDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		660E09BD2317C221007DFF39 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		660E09BE2317C221007DFF39 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		660E09C02317C221007DFF39 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		660E09C12317C221007DFF39 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		660E09C42317C221007DFF39 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		660E09C62317C223007DFF39 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		660E09C92317C223007DFF39 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		660E09CB2317C223007DFF39 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		660E09CC2317C223007DFF39 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		66354A8A233C8EEB00782D9A /* YHImageFilter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YHImageFilter.h; sourceTree = "<group>"; };
+		66354A8B233C8EEB00782D9A /* YHImageFilter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YHImageFilter.m; sourceTree = "<group>"; };
+		6638DA5C2367EFD7001765AF /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/Frameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
+		66D4F2BE2333A9E800DF07AB /* YHGpuProcessor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YHGpuProcessor.h; sourceTree = "<group>"; };
+		66D4F2BF2333A9E800DF07AB /* YHGpuProcessor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YHGpuProcessor.m; sourceTree = "<group>"; };
+		A39ED06FCBE3A942574500FD /* libPods-GPUImageDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-GPUImageDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C24A4FE634D08B01D59AA65A /* Pods-GPUImageDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GPUImageDemo.release.xcconfig"; path = "Target Support Files/Pods-GPUImageDemo/Pods-GPUImageDemo.release.xcconfig"; sourceTree = "<group>"; };
+		D70B3383402299C191618D9E /* Pods-GPUImageDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GPUImageDemo.debug.xcconfig"; path = "Target Support Files/Pods-GPUImageDemo/Pods-GPUImageDemo.debug.xcconfig"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		660E09B72317C221007DFF39 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6638DA5D2367EFD7001765AF /* VideoToolbox.framework in Frameworks */,
+				DAF504913FE6B1A686B36123 /* libPods-GPUImageDemo.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		4A3FA6BC92E4938A4F293A27 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				6638DA5C2367EFD7001765AF /* VideoToolbox.framework */,
+				A39ED06FCBE3A942574500FD /* libPods-GPUImageDemo.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		660E09B12317C221007DFF39 = {
+			isa = PBXGroup;
+			children = (
+				660E09BC2317C221007DFF39 /* GPUImageDemo */,
+				660E09BB2317C221007DFF39 /* Products */,
+				A84E752CAAE86DDDB260F108 /* Pods */,
+				4A3FA6BC92E4938A4F293A27 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		660E09BB2317C221007DFF39 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				660E09BA2317C221007DFF39 /* GPUImageDemo.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		660E09BC2317C221007DFF39 /* GPUImageDemo */ = {
+			isa = PBXGroup;
+			children = (
+				660E09BD2317C221007DFF39 /* AppDelegate.h */,
+				660E09BE2317C221007DFF39 /* AppDelegate.m */,
+				660E09C02317C221007DFF39 /* ViewController.h */,
+				660E09C12317C221007DFF39 /* ViewController.m */,
+				66354A8A233C8EEB00782D9A /* YHImageFilter.h */,
+				66354A8B233C8EEB00782D9A /* YHImageFilter.m */,
+				66D4F2BE2333A9E800DF07AB /* YHGpuProcessor.h */,
+				66D4F2BF2333A9E800DF07AB /* YHGpuProcessor.m */,
+				660E09C32317C221007DFF39 /* Main.storyboard */,
+				660E09C62317C223007DFF39 /* Assets.xcassets */,
+				660E09C82317C223007DFF39 /* LaunchScreen.storyboard */,
+				660E09CB2317C223007DFF39 /* Info.plist */,
+				660E09CC2317C223007DFF39 /* main.m */,
+			);
+			path = GPUImageDemo;
+			sourceTree = "<group>";
+		};
+		A84E752CAAE86DDDB260F108 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				D70B3383402299C191618D9E /* Pods-GPUImageDemo.debug.xcconfig */,
+				C24A4FE634D08B01D59AA65A /* Pods-GPUImageDemo.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		660E09B92317C221007DFF39 /* GPUImageDemo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 660E09D02317C223007DFF39 /* Build configuration list for PBXNativeTarget "GPUImageDemo" */;
+			buildPhases = (
+				D2DBBB16EE16E491B6845A2C /* [CP] Check Pods Manifest.lock */,
+				660E09B62317C221007DFF39 /* Sources */,
+				660E09B72317C221007DFF39 /* Frameworks */,
+				660E09B82317C221007DFF39 /* Resources */,
+				6038A9634EEDE203139F24B0 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = GPUImageDemo;
+			productName = GPUImageDemo;
+			productReference = 660E09BA2317C221007DFF39 /* GPUImageDemo.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		660E09B22317C221007DFF39 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1010;
+				ORGANIZATIONNAME = "彭依汉";
+				TargetAttributes = {
+					660E09B92317C221007DFF39 = {
+						CreatedOnToolsVersion = 10.1;
+					};
+				};
+			};
+			buildConfigurationList = 660E09B52317C221007DFF39 /* Build configuration list for PBXProject "GPUImageDemo" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 660E09B12317C221007DFF39;
+			productRefGroup = 660E09BB2317C221007DFF39 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				660E09B92317C221007DFF39 /* GPUImageDemo */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		660E09B82317C221007DFF39 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				660E09CA2317C223007DFF39 /* LaunchScreen.storyboard in Resources */,
+				660E09C72317C223007DFF39 /* Assets.xcassets in Resources */,
+				660E09C52317C221007DFF39 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		6038A9634EEDE203139F24B0 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-GPUImageDemo/Pods-GPUImageDemo-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-GPUImageDemo/Pods-GPUImageDemo-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-GPUImageDemo/Pods-GPUImageDemo-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D2DBBB16EE16E491B6845A2C /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-GPUImageDemo-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		660E09B62317C221007DFF39 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				66D4F2C02333A9E800DF07AB /* YHGpuProcessor.m in Sources */,
+				66354A8C233C8EEB00782D9A /* YHImageFilter.m in Sources */,
+				660E09C22317C221007DFF39 /* ViewController.m in Sources */,
+				660E09CD2317C223007DFF39 /* main.m in Sources */,
+				660E09BF2317C221007DFF39 /* AppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		660E09C32317C221007DFF39 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				660E09C42317C221007DFF39 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		660E09C82317C223007DFF39 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				660E09C92317C223007DFF39 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		660E09CE2317C223007DFF39 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		660E09CF2317C223007DFF39 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		660E09D12317C223007DFF39 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D70B3383402299C191618D9E /* Pods-GPUImageDemo.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = XQH2UMMQLA;
+				INFOPLIST_FILE = GPUImageDemo/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = me.yohen.GPUImageDemo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		660E09D22317C223007DFF39 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C24A4FE634D08B01D59AA65A /* Pods-GPUImageDemo.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = XQH2UMMQLA;
+				INFOPLIST_FILE = GPUImageDemo/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = me.yohen.GPUImageDemo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		660E09B52317C221007DFF39 /* Build configuration list for PBXProject "GPUImageDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				660E09CE2317C223007DFF39 /* Debug */,
+				660E09CF2317C223007DFF39 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		660E09D02317C223007DFF39 /* Build configuration list for PBXNativeTarget "GPUImageDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				660E09D12317C223007DFF39 /* Debug */,
+				660E09D22317C223007DFF39 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 660E09B22317C221007DFF39 /* Project object */;
+}
