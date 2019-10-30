@@ -18,6 +18,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)process:(CMSampleBufferRef)sampleBuffer;
 
+@property (assign, nonatomic) AudioConverterRef audioConverter;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -16,6 +16,14 @@
 
 @property (weak, nonatomic) IBOutlet GPUImageView *imageView;
 
+ //存储PCM裸数据
+@property (assign, nonatomic) char* pcmBuffer;
+@property (assign, nonatomic) unsigned long pcmBufferSize;
+
+//存储AAC数据
+@property (assign, nonatomic) char* aacBuffer;
+@property (assign, nonatomic) unsigned long aacBufferSize;
+
 @property (strong, nonatomic) AVCaptureSession *captureSession;
 
 @property (strong, nonatomic) AVCaptureDevice *captureDevice;
@@ -32,6 +40,8 @@
 
 @property (assign, nonatomic) AudioConverterRef audioConverter;
 
+@property (strong, nonatomic) NSFileHandle *fileHandle;
+
 @end
 
 @implementation ViewController
@@ -45,6 +55,9 @@
     [self configCamera];
     
     NSLog(@"count:%ld",[self countStep:5]);
+    
+    //每个单元unit大小为1024
+    self.aacBufferSize  = 1024;
 }
 
 - (NSInteger)countStep:(NSInteger)count{
@@ -57,13 +70,10 @@
     return [self countStep:count-1] + [self countStep:count -2];
 }
 
-
-
-
 - (void)configCamera{
-    
     [self.captureSession beginConfiguration];
     NSError *error = nil;
+    
     AVCaptureDeviceInput *newVideoInput = [AVCaptureDeviceInput deviceInputWithDevice:self.captureDevice error:&error];
     if(newVideoInput && [self.captureSession canAddInput:newVideoInput]){
         [self.captureSession addInput:newVideoInput];
@@ -77,7 +87,15 @@
     if([self.captureSession canAddOutput:self.videoOutput]){
         [self.captureSession addOutput:self.videoOutput];
     }
-    //音频输出
+    
+    //音频采集输入端
+    AVCaptureDevice *audioDevice = [[AVCaptureDevice devicesWithMediaType:AVMediaTypeAudio] lastObject];
+    AVCaptureDeviceInput *audioDeviceInput = [[AVCaptureDeviceInput alloc]initWithDevice:audioDevice error:nil];
+    if(audioDeviceInput && [self.captureSession canAddInput:audioDeviceInput]){
+        [self.captureSession addInput:audioDeviceInput];
+    }
+    
+    //音频数据输出端
     self.audioOutput = [[AVCaptureAudioDataOutput alloc]init];
     if([self.captureSession canAddOutput:self.audioOutput]){
         [self.captureSession addOutput:self.audioOutput];
@@ -126,6 +144,10 @@
     [self.captureSession commitConfiguration];
 }
 
+//AudioStreamBasicDescription是输出流的结构体描述
+//配置好outAudioSteamBasicDescription 后
+//根据AudioClassDescription（编码器）
+//调用AudioConverterNewSpecific 创建转换器
 - (void)setupEncoderFromSampleBuffer:(CMSampleBufferRef)sampleBuffer{
     AudioStreamBasicDescription inAudioSteamBasicDescription = *CMAudioFormatDescriptionGetStreamBasicDescription((CMAudioFormatDescriptionRef)CMSampleBufferGetFormatDescription(sampleBuffer));
     //初始化输出流的结构体描述为0，很重要
@@ -148,12 +170,14 @@
     outAudioSteamBasicDescription.mBitsPerChannel = 0;
     //8字节对齐，填0
     outAudioSteamBasicDescription.mReserved = 0;
-    //软编
+    //获得编码器
     AudioClassDescription *description = [self getAudioClassDescriptionWithType:kAudioFormatMPEG4AAC fromManufacturer:kAppleSoftwareAudioCodecManufacturer];
     OSStatus status = AudioConverterNewSpecific(&inAudioSteamBasicDescription, &outAudioSteamBasicDescription, 1, description, &_audioConverter);
     if (status != 0) {
         NSLog(@"setup converter: %d",(int)status);
     }
+    
+    self.gpuProcessor.audioConverter = self.audioConverter;
 }
 
 - (AudioClassDescription *)getAudioClassDescriptionWithType:(UInt32)type fromManufacturer:(UInt32)manufacturer{
@@ -180,14 +204,12 @@
         return nil;
     }
     for (unsigned int i = 0; i < count; i++) {
-        if((type == descriptions[i].mSubType) && (manufacturer == descriptions[i].mSubType)){
+        if((type == descriptions[i].mSubType) && (manufacturer == descriptions[i].mManufacturer)){
             memcpy(&desc, &(descriptions[i]), sizeof(desc));
             return &desc;
         }
     }
-    
     return nil;
-    
 }
 
 
@@ -208,9 +230,97 @@
 #pragma mark ----------
 #pragma mark ---------- AVCaptureVideoDataOutputSampleBufferDelegate ------------
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
-//    CVPixelBufferRef ref = CMSampleBufferGetImageBuffer(sampleBuffer);
-//    UIImage *image = [self uiImageFromPixelBuffer:ref];
-    [self.gpuProcessor process:sampleBuffer];
+    
+    if(captureOutput == self.videoOutput){        //处理视频数据
+        [self.gpuProcessor process:sampleBuffer];
+    } else if(captureOutput == self.audioOutput){ //处理音频数据
+        [self processAudioBuffer:sampleBuffer];
+    }
+    
+}
+
+//处理音频数据
+- (void)processAudioBuffer:(CMSampleBufferRef)sampleBuffer{
+    CMBlockBufferRef blockBuffer = CMSampleBufferGetDataBuffer(sampleBuffer);
+    CFRetain(blockBuffer);
+    
+    //这里拿到pcmBuffer指针和pcmBufferSize大小
+    OSStatus status = CMBlockBufferGetDataPointer(blockBuffer, 0, NULL, &_pcmBufferSize, &_pcmBuffer);
+    if(status == kCMBlockBufferNoErr){
+        memset(_aacBuffer, 0, _aacBufferSize);
+        
+        AudioBufferList outAudioBufferList = {0};
+        outAudioBufferList.mNumberBuffers = 1;
+        outAudioBufferList.mBuffers[0].mNumberChannels = 1;
+        outAudioBufferList.mBuffers[0].mDataByteSize = (int)_aacBufferSize;
+        outAudioBufferList.mBuffers[0].mData = _aacBuffer;
+        
+        AudioStreamPacketDescription *outPacketDescription = NULL;
+        UInt32 ioOutputDataPacketSize = 1;
+        
+        status = AudioConverterFillComplexBuffer(_audioConverter, inInputDataProc, (__bridge void *)(self), &ioOutputDataPacketSize, &outAudioBufferList, outPacketDescription);
+        NSData *rawAAC;
+        if(status == 0){
+            rawAAC = [NSData dataWithBytes:outAudioBufferList.mBuffers[0].mData length:outAudioBufferList.mBuffers[0].mDataByteSize];
+            NSData *adtsHeader = [self adtsDataForPacketLength:rawAAC.length];
+            NSMutableData *fullData = [NSMutableData dataWithData:adtsHeader];
+            [fullData appendData:rawAAC];
+            rawAAC = fullData;
+            
+            [self.fileHandle writeData:rawAAC];
+        }
+        
+    }
+    
+}
+
+- (NSData*) adtsDataForPacketLength:(NSUInteger)packetLength {
+    int adtsLength = 7;
+    char *packet = malloc(sizeof(char) * adtsLength);
+    // Variables Recycled by addADTStoPacket
+    int profile = 2;  //AAC LC
+    //39=MediaCodecInfo.CodecProfileLevel.AACObjectELD;
+    int freqIdx = 4;  //44.1KHz
+    int chanCfg = 1;  //MPEG-4 Audio Channel Configuration. 1 Channel front-center
+    NSUInteger fullLength = adtsLength + packetLength;
+    // fill in ADTS data
+    packet[0] = (char)0xFF; // 11111111     = syncword
+    packet[1] = (char)0xF9; // 1111 1 00 1  = syncword MPEG-2 Layer CRC
+    packet[2] = (char)(((profile-1)<<6) + (freqIdx<<2) +(chanCfg>>2));
+    packet[3] = (char)(((chanCfg&3)<<6) + (fullLength>>11));
+    packet[4] = (char)((fullLength&0x7FF) >> 3);
+    packet[5] = (char)(((fullLength&7)<<5) + 0x1F);
+    packet[6] = (char)0xFC;
+    NSData *data = [NSData dataWithBytesNoCopy:packet length:adtsLength freeWhenDone:YES];
+    return data;
+}
+
+OSStatus inInputDataProc(AudioConverterRef inAudioConverter, UInt32 *ioNumberDataPackets, AudioBufferList *ioData, AudioStreamPacketDescription **outDataPacketDescription, void *inUserData)
+{
+    ViewController *encoder = (__bridge ViewController *)(inUserData);
+    UInt32 requestedPackets = *ioNumberDataPackets;
+    
+    size_t copiedSamples = [encoder copyPCMSamplesIntoBuffer:ioData];
+    if (copiedSamples < requestedPackets) {
+        //PCM 缓冲区还没满
+        *ioNumberDataPackets = 0;
+        return -1;
+    }
+    *ioNumberDataPackets = 1;
+    return noErr;
+}
+
+ 
+- (size_t) copyPCMSamplesIntoBuffer:(AudioBufferList*)ioData {
+    size_t originalBufferSize = _pcmBufferSize;
+    if (!originalBufferSize) {
+        return 0;
+    }
+    ioData->mBuffers[0].mData = _pcmBuffer;
+    ioData->mBuffers[0].mDataByteSize = (int)_pcmBufferSize;
+    _pcmBuffer = NULL;
+    _pcmBufferSize = 0;
+    return originalBufferSize;
 }
 
 
@@ -227,7 +337,6 @@
     
     return image;
 }
-
 
 - (uint8_t *)convertVideoSampleBufferToYuvData:(CMSampleBufferRef)videoSample{
     CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(videoSample);
@@ -288,6 +397,20 @@
     return _gpuProcessor;
 }
 
+
+- (NSFileHandle*)fileHandle{
+    if(!_fileHandle){
+        NSArray *paths= NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *documentDirectory = [paths firstObject];
+        NSString *filePath = [documentDirectory stringByAppendingPathComponent:@"aac.data"];
+        
+        [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+        [[NSFileManager defaultManager] createFileAtPath:filePath contents:nil attributes:nil];
+        
+        _fileHandle = [NSFileHandle fileHandleForWritingAtPath:filePath];
+    }
+    return _fileHandle;
+}
 
 
 @end
