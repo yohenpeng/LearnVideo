@@ -12,7 +12,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import "YHGpuProcessor.h"
 
-@interface ViewController ()<AVCaptureVideoDataOutputSampleBufferDelegate>
+@interface ViewController ()<AVCaptureVideoDataOutputSampleBufferDelegate,AVCaptureAudioDataOutputSampleBufferDelegate>
 
 @property (weak, nonatomic) IBOutlet GPUImageView *imageView;
 
@@ -24,10 +24,13 @@
 
 @property (strong, nonatomic) AVCaptureVideoDataOutput *videoOutput;
 
+@property (strong, nonatomic) AVCaptureAudioDataOutput *audioOutput;
 
 @property (strong, nonatomic) dispatch_queue_t videoQueue;
 
 @property (strong, nonatomic) YHGpuProcessor *gpuProcessor;
+
+@property (assign, nonatomic) AudioConverterRef audioConverter;
 
 @end
 
@@ -66,7 +69,7 @@
         [self.captureSession addInput:newVideoInput];
         self.videoInput = newVideoInput;
     }
-    
+    //视频输出
     self.videoOutput = [[AVCaptureVideoDataOutput alloc]init];
     [self.videoOutput setAlwaysDiscardsLateVideoFrames:YES];
     [self.videoOutput setVideoSettings:[NSDictionary dictionaryWithObject:@(kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange) forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
@@ -74,6 +77,12 @@
     if([self.captureSession canAddOutput:self.videoOutput]){
         [self.captureSession addOutput:self.videoOutput];
     }
+    //音频输出
+    self.audioOutput = [[AVCaptureAudioDataOutput alloc]init];
+    if([self.captureSession canAddOutput:self.audioOutput]){
+        [self.captureSession addOutput:self.audioOutput];
+    }
+    [self.audioOutput setSampleBufferDelegate:self queue:self.videoQueue];
     
     AVCaptureConnection *videoConnection = [self.videoOutput connectionWithMediaType:AVMediaTypeVideo];
     [videoConnection setVideoOrientation:AVCaptureVideoOrientationPortrait];
@@ -116,6 +125,71 @@
     
     [self.captureSession commitConfiguration];
 }
+
+- (void)setupEncoderFromSampleBuffer:(CMSampleBufferRef)sampleBuffer{
+    AudioStreamBasicDescription inAudioSteamBasicDescription = *CMAudioFormatDescriptionGetStreamBasicDescription((CMAudioFormatDescriptionRef)CMSampleBufferGetFormatDescription(sampleBuffer));
+    //初始化输出流的结构体描述为0，很重要
+    AudioStreamBasicDescription outAudioSteamBasicDescription = {0};
+    //音频流，在正常播放情况下的帧率。如果是压缩的格式，这个属性表示解压缩后的帧率。帧率不能为0
+    outAudioSteamBasicDescription.mSampleRate = inAudioSteamBasicDescription.mSampleRate;
+    //设置编码格式
+    outAudioSteamBasicDescription.mFormatID = kAudioFormatMPEG4AAC;
+    //无损编码，0表示没有
+    outAudioSteamBasicDescription.mFormatFlags = kMPEG4Object_AAC_LC;
+    //每一个packet的音视频数据大小。如果设置动态大小则设置为0，动态大小的格式，需要用AudioStreamPacketDesription来确定每个packet的大小
+    outAudioSteamBasicDescription.mBytesPerPacket = 0;
+    //每个packet的帧数。如果是未压缩的音频数据，值是1。动态帧率格式，这个值是较大的固定数字，比如说AAC的1024。如果是动态大小帧数（比如Ogg格式）设置为0.
+    outAudioSteamBasicDescription.mFramesPerPacket = 1024;
+    //每帧的大小。每一帧的起始点到下一帧的起始点。如果是压缩格式，设置为0.
+    outAudioSteamBasicDescription.mBytesPerFrame = 0;
+    //声道数
+    outAudioSteamBasicDescription.mChannelsPerFrame = 1;
+    //压缩格式设置为0
+    outAudioSteamBasicDescription.mBitsPerChannel = 0;
+    //8字节对齐，填0
+    outAudioSteamBasicDescription.mReserved = 0;
+    //软编
+    AudioClassDescription *description = [self getAudioClassDescriptionWithType:kAudioFormatMPEG4AAC fromManufacturer:kAppleSoftwareAudioCodecManufacturer];
+    OSStatus status = AudioConverterNewSpecific(&inAudioSteamBasicDescription, &outAudioSteamBasicDescription, 1, description, &_audioConverter);
+    if (status != 0) {
+        NSLog(@"setup converter: %d",(int)status);
+    }
+}
+
+- (AudioClassDescription *)getAudioClassDescriptionWithType:(UInt32)type fromManufacturer:(UInt32)manufacturer{
+    static AudioClassDescription desc;
+    UInt32 encoderSpecifier = type;
+    OSStatus st;
+    
+    UInt32 size;
+    //拿到音频编码的格式大小
+    st = AudioFormatGetPropertyInfo(kAudioFormatProperty_Encoders, sizeof(encoderSpecifier), &encoderSpecifier, &size);
+    
+    if(st){
+        NSLog(@"error getting audio format propery info: %d", (int)(st));
+        return nil;
+    }
+    //一共有count这么多个编码的格式
+    unsigned int count = size / sizeof(AudioClassDescription);
+    
+    //获取编码器数组
+    AudioClassDescription descriptions[count];
+    st = AudioFormatGetProperty(kAudioFormatProperty_Encoders, sizeof(encoderSpecifier), &encoderSpecifier, &size, descriptions);
+    if(st){
+        NSLog(@"error getting audio format propery: %d", (int)(st));
+        return nil;
+    }
+    for (unsigned int i = 0; i < count; i++) {
+        if((type == descriptions[i].mSubType) && (manufacturer == descriptions[i].mSubType)){
+            memcpy(&desc, &(descriptions[i]), sizeof(desc));
+            return &desc;
+        }
+    }
+    
+    return nil;
+    
+}
+
 
 #pragma mark ----------
 #pragma mark ---------- event && response ------------
@@ -206,7 +280,7 @@
     return _videoQueue;
 }
 
-//传入GPUImageView用于
+//传入GPUImageView用于滤镜处理后展示
 - (YHGpuProcessor *)gpuProcessor{
     if(!_gpuProcessor){
         _gpuProcessor = [[YHGpuProcessor alloc]initWithGpuImageView:self.imageView];
