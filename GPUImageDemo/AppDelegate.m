@@ -47,5 +47,16 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
+//上count个阶梯，一次可以上一阶和两阶，请问有多少种走法
+- (NSInteger)countStep:(NSInteger)count{
+    if(count == 1){
+        return 1;
+    }
+    if (count == 2){
+        return 2;
+    }
+    return [self countStep:count-1] + [self countStep:count -2];
+}
+
 
 @end

@@ -79,6 +79,7 @@ const GLfloat gpuColorConversion601FullRange[] = {
         [self.sepiaFilter addTarget:self.weakImageView];
         [self.sepiaFilter addTarget:self.rawDataOutput];
         [self initYuvConversion];
+        [self createCompressSessionIfNeed];
     }
     return self;
 }
@@ -370,12 +371,12 @@ static BOOL bNeedCreateComporessSession = YES;
             VTSessionSetProperty(sessionRef, kVTCompressionPropertyKey_ExpectedFrameRate, fpsRef);
             
             //设置码率
-//            int bitRate = 1200 * 1000;
-//            CFNumberRef bitRateRef = CFNumberCreate(NULL, kCFNumberIntType, &bitRate);
+//            int bitRate = 720 * 1280 * 3 * 4 * 8;
+//            CFNumberRef bitRateRef = CFNumberCreate(NULL, kCFNumberSInt32Type, &bitRate);
 //            VTSessionSetProperty(sessionRef, kVTCompressionPropertyKey_AverageBitRate, &bitRateRef);
             
             int bigRateLimit = 720 * 1280 * 3 * 4;
-            CFNumberRef bitRateLimitRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberIntType, &bigRateLimit);
+            CFNumberRef bitRateLimitRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &bigRateLimit);
             VTSessionSetProperty(sessionRef, kVTCompressionPropertyKey_DataRateLimits, bitRateLimitRef);
             
             //准备开始编码
