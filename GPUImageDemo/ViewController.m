@@ -40,6 +40,8 @@
 
 @property (strong, nonatomic) dispatch_queue_t aacEncoderQueue;
 
+@property (strong, nonatomic) dispatch_queue_t dispatchQueue;
+
 @property (strong, nonatomic) YHGpuProcessor *gpuProcessor;
 
 @property (assign, nonatomic) AudioConverterRef audioConverter;
@@ -56,12 +58,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(captureSessionRunTimeError:) name:AVCaptureSessionRuntimeErrorNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(captureSessionRunTimeError:) name:AVCaptureSessionDidStartRunningNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(captureSessionRunTimeError:) name:AVCaptureSessionDidStopRunningNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(captureSessionRunTimeError:) name:AVCaptureSessionWasInterruptedNotification object:nil];
-    
+
     _audioConverter = NULL;
     _pcmBufferSize = 0;
     _pcmBuffer = NULL;
@@ -70,14 +67,11 @@
     memset(_aacBuffer, 0, _aacBufferSize);
     
     [self configCamera];
+    [self.gpuProcessor createCompressSessionIfNeed];
 }
 
 - (void)captureSessionRunTimeError:(NSNotification *)notification{
     NSLog(@"%@",notification);
-}
-
-- (void)dealloc{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)configCamera{
@@ -245,17 +239,20 @@
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
     
     if(captureOutput == self.videoOutput){        //处理视频数据
-        [self.gpuProcessor process:sampleBuffer];
+        dispatch_sync(self.dispatchQueue, ^{
+            [self.gpuProcessor process:sampleBuffer];
+        });
     } else if(captureOutput == self.audioOutput){ //处理音频数据
-        [self processAudioBuffer:sampleBuffer];
+        dispatch_sync(self.dispatchQueue, ^{
+            [self processAudioBuffer:sampleBuffer];
+        });
     }
-    
 }
 
 //处理音频数据
 - (void)processAudioBuffer:(CMSampleBufferRef)sampleBuffer{
     CFRetain(sampleBuffer);
-    dispatch_sync(self.aacEncoderQueue, ^{
+    dispatch_async(self.aacEncoderQueue, ^{
         if(!_audioConverter){
             [self setupEncoderFromSampleBuffer:sampleBuffer];
         }
@@ -290,10 +287,11 @@
                 [self.fileHandle writeData:rawAAC];
                 NSLog(@"AAC Success");
             }
+            
+            CFRelease(sampleBuffer);
+            CFRelease(blockBuffer);
         }
-        
-        CFRelease(sampleBuffer);
-        CFRetain(blockBuffer);
+  
     });
 }
 
@@ -414,9 +412,16 @@ OSStatus inInputDataProc(AudioConverterRef inAudioConverter, UInt32 *ioNumberDat
 }
 
 
+- (dispatch_queue_t)dispatchQueue{
+    if(!_dispatchQueue){
+        _dispatchQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    }
+    return _dispatchQueue;
+}
+
 - (dispatch_queue_t)aacEncoderQueue{
     if(!_aacEncoderQueue){
-        _aacEncoderQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+        _aacEncoderQueue = dispatch_queue_create("me.yohen.aacencoder", DISPATCH_QUEUE_SERIAL);
     }
     return _aacEncoderQueue;
 }

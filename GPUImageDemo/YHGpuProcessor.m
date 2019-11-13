@@ -371,9 +371,9 @@ static BOOL bNeedCreateComporessSession = YES;
             VTSessionSetProperty(sessionRef, kVTCompressionPropertyKey_ExpectedFrameRate, fpsRef);
             
             //设置码率
-//            int bitRate = 720 * 1280 * 3 * 4 * 8;
-//            CFNumberRef bitRateRef = CFNumberCreate(NULL, kCFNumberSInt32Type, &bitRate);
-//            VTSessionSetProperty(sessionRef, kVTCompressionPropertyKey_AverageBitRate, &bitRateRef);
+            int bitRate = 720 * 1280 * 3 * 4 * 8;
+            CFNumberRef bitRateRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &bitRate);
+            VTSessionSetProperty(sessionRef, kVTCompressionPropertyKey_AverageBitRate, bitRateRef);
             
             int bigRateLimit = 720 * 1280 * 3 * 4;
             CFNumberRef bitRateLimitRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &bigRateLimit);
