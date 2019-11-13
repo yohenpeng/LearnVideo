@@ -75,9 +75,9 @@ const GLfloat gpuColorConversion601FullRange[] = {
     if(self){
         //先输出到YHImageFilter滤镜，然后再输出到GPUImageView
         self.weakImageView = imageView;
-        [self addTarget:self.sepiaFilter];
-        [self.sepiaFilter addTarget:self.weakImageView];
-        [self.sepiaFilter addTarget:self.rawDataOutput];
+        [self addTarget:self.yhImageFilter];
+        [self.yhImageFilter addTarget:self.weakImageView];
+        [self.yhImageFilter addTarget:self.rawDataOutput];
         [self initYuvConversion];
         [self createCompressSessionIfNeed];
     }
